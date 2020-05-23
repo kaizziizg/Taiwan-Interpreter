@@ -1,8 +1,19 @@
-let taiwan_term=[];
-let china_term=[];
+let taiwan_term=["test"];
+let china_term=["test"];
 var count=0;
 
-init();
+
+
+chrome.storage.sync.get('FirstUse', function (data) {
+    if (data.FirstUse == true) {
+        init();
+    }else{
+        alert("請先點選插件進行更新資料")
+		chrome.storage.sync.set({ error_count: 0 });
+        chrome.storage.sync.set({ FirstUse: true });
+    }
+});
+
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
@@ -17,6 +28,8 @@ function Find_error() {
     chrome.storage.sync.get('china_term_data', function (data) {
         china_term = data.china_term_data;
     });
+
+    
     for (var i = 0; i < china_term.length; i++) {
         if (document.body.innerHTML.includes(china_term[i])) {
             count += 1;

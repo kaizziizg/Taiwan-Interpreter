@@ -1,0 +1,42 @@
+.flex {
+  display: flex;
+
+  /* padding: 2px; */
+  flex-direction: column;
+}
+#container {
+  background-color: #dcdcdc;
+  border-radius: 10px;
+  /* border-style: solid; */
+  font-size: 20px;
+  font-family: "Helvetica", "Arial", "LiHei Pro", "黑體-繁", "微軟正黑體",
+    "sans-serif";
+}
+
+.item {
+  flex: 1;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #515c65;
+  font-weight: bold;
+}
+.item2 {
+  flex: 1;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #515c65;
+  font-weight: bold;
+}
+.item3 {
+  flex: 5;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+height: 100px;
+  font-weight: bold;
+}

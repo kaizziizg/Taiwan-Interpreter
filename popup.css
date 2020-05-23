@@ -1,0 +1,49 @@
+.flex {
+  display: flex;
+  height: 160px;
+  width: 220px;
+  /* padding: 2px; */
+  flex-direction: column;
+}
+#container {
+  background-color: #dcdcdc;
+  border-radius: 10px;
+  /* border-style: solid; */
+  font-size: 12px;
+  font-family: "Helvetica", "Arial", "LiHei Pro", "黑體-繁", "微軟正黑體",
+    "sans-serif";
+}
+
+.item {
+  flex: 1;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #515c65;
+  font-weight: bold;
+}
+.item2 {
+  flex: 2;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+.title {
+  font-size: 2rem;
+}
+.autotrans {
+  font-size: 20px;
+}
+
+.btn_W{
+  font-weight: bold;
+}
+
+.bar_W{
+  font-weight: bold;
+  font-size: 16px;
+  user-select: none;
+}

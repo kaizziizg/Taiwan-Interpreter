@@ -6,12 +6,10 @@
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": "images/icon.png",
     "default_popup": "popup.html",
-    "default_title": "轉換中國詞彙吧!"
+    "default_title": "轉譯中國詞彙吧!"
   },
-  "permissions": [
-    "activeTab",
-    "storage"
-  ]
+  "content_scripts": [{ "matches": ["<all_urls>"], "js": ["content.js"] }],
+  "permissions": ["activeTab","tabs","storage"]
 }

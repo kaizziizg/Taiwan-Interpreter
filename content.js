@@ -1,9 +1,8 @@
+let taiwan_term=[];
+let china_term=[];
+var count=0;
 
-chrome.storage.sync.get('Cbox_value', function (data) {
-    if (data.Cbox_value == true) {
-        Transword();
-    }
-});
+init();
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
@@ -13,28 +12,48 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
-function test() {
-    alert("test");
-}
-
 function Find_error() {
-    for (var i = 0; i < error_word.length; i++) {
-        if (document.body.innerHTML.includes(error_word[i])) {
+    
+    chrome.storage.sync.get('china_term_data', function (data) {
+        china_term = data.china_term_data;
+    });
+    for (var i = 0; i < china_term.length; i++) {
+        if (document.body.innerHTML.includes(china_term[i])) {
             count += 1;
         }
     }
     chrome.storage.sync.set({ error_count: count });
     console.log("總共有" + count + "錯誤");
 }
+
 function Transword() {
-    let error_word = ["編程", "硬件", "軟件", "外設", "分辨率", "屏", "觸控屏", "攝像頭", "模塊", "模擬"];
-    let true_word = ["Coding", "硬體", "軟體", "驅動", "解析度", "螢幕", "觸控螢幕", "視訊鏡頭", "模組", "類比"];
-
-    for (var i = 0; i < error_word.length; i++) {
-        document.body.innerHTML = document.body.innerHTML.replace(error_word[i], true_word[i])
-
+    chrome.storage.sync.get('taiwan_term_data', function (data) {
+        taiwan_term = data.taiwan_term_data;
+    });
+    chrome.storage.sync.get('china_term_data', function (data) {
+        china_term = data.china_term_data;
+    });
+    for (var i = 0; i < taiwan_term.length; i++) {
+        document.body.innerHTML = document.body.innerHTML.replace(china_term[i], taiwan_term[i])
     }
-    chrome.storage.sync.set({ error_count: count });
     
+    
+}
+function init(){
+    chrome.storage.sync.get('taiwan_term_data', function (data) {
+        taiwan_term = data.taiwan_term_data;
+    });
+    chrome.storage.sync.get('china_term_data', function (data) {
+        china_term = data.china_term_data;
+    });
+
+    setTimeout(function(){
+        Find_error();
+        chrome.storage.sync.get('Cbox_value', function (data) {
+            if (data.Cbox_value == true) {
+                Transword();
+            }
+        });
+    },500);
 }
 

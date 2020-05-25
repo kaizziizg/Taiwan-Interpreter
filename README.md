@@ -1,5 +1,6 @@
 # Taiwan Term interpreter
 這個Chrome extension可以讓你快速轉換中國用語至台灣用語，拒絕中國用語污染台灣網路環境!
+<br>
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
 

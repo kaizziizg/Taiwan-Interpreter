@@ -4,12 +4,12 @@ china_term=[]
 taiwan_term=[]
 #刪除第一行，然後儲存刪除後的檔案
 with open("googlesheet.csv",'r',encoding="utf-8") as f:
-    with open("googlesheet_n.csv",'w') as f1:
+    with open("googlesheet_n.csv",'w', encoding='utf8') as f1:
         next(f) # skip header line
         for line in f:
             f1.write(line)
 #讀取新檔案
-with open('googlesheet_n.csv', newline='') as csvfile:
+with open('googlesheet_n.csv', newline='', encoding='utf8') as csvfile:
     rows = csv.DictReader(csvfile)
     for row in rows:
         print(row['台灣用語'],row['中國用語/其他'])

@@ -17,10 +17,14 @@ with open('googlesheet_n.csv', newline='', encoding='utf8') as csvfile:
         china_term.append(row['中國用語/其他'])
 #建立txt
 with io.open("taiwan_term.txt",'w', encoding='utf8') as file:
-    for i in taiwan_term:    
+    for i in taiwan_term:   
+        if(i=="行" or i=="列"):
+            continue 
         file.write(i)
         file.write(",")
 with io.open("china_term.txt",'w', encoding='utf8') as file:
-    for i in china_term:    
+    for i in china_term:  
+        if(i=="行" or i=="列"):
+            continue 
         file.write(i)
         file.write(",")

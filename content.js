@@ -20,42 +20,66 @@ chrome.storage.sync.get('FirstUse', function (data) {
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.message == "trans") {
-            Transword();
-
-            
+            Transword(); 
+        }else if(request.message == "find"){
+            Find_error(); 
+        }else if(request.message == "message"){
+            show_message();
         }
     }
 );
 
 
+function show_message(){
+    chrome.storage.sync.get('error_message', function (data) {
+        alert(data.error_message);
+    });
+}
+
+
+
 
 
 function Find_error() {
-    
+    count=0;
+    message=""
     chrome.storage.sync.get('china_term_data', function (data) {
         china_term = data.china_term_data;
     });
 
     
-    for (var i = 0; i < china_term.length; i++) {
+    for (var i = 0; i < china_term.length-1; i++) {
         if (document.body.innerHTML.includes(china_term[i])) {
             count += 1;
+            message = message+ china_term[i]+"->"+taiwan_term[i]+"\n";
         }
+        
     }
+
     chrome.storage.sync.set({ error_count: count });
+
     // console.log("總共有" + count + "錯誤");
+
+    chrome.storage.sync.set({ error_message: message });
+
 }
 
 function Transword() {
-    chrome.storage.sync.get('taiwan_term_data', function (data) {
-        taiwan_term = data.taiwan_term_data;
-    });
-    chrome.storage.sync.get('china_term_data', function (data) {
-        china_term = data.china_term_data;
-    });
+    // chrome.storage.sync.get('taiwan_term_data', function (data) {
+    //     taiwan_term = data.taiwan_term_data;
+    // });
+    // chrome.storage.sync.get('china_term_data', function (data) {
+    //     china_term = data.china_term_data;
+    // });
+    // console.log(china_term);
+    // console.log(taiwan_term);
     for (var i = 0; i < taiwan_term.length; i++) {
-        document.body.innerHTML = document.body.innerHTML.replace(china_term[i], taiwan_term[i])
-    }  
+        if (document.body.innerHTML.includes(china_term[i])) {
+            document.body.innerHTML = document.body.innerHTML.replace(china_term[i], taiwan_term[i]);
+        }
+    }
+    
+
 }
 function init(){
     chrome.storage.sync.get('taiwan_term_data', function (data) {
@@ -82,6 +106,7 @@ function UpdataData() {
         china_term = result[1].split(',');
         chrome.storage.sync.set({ taiwan_term_data: taiwan_term });
         chrome.storage.sync.set({ china_term_data: china_term });
+        chrome.storage.sync.set({ error_index: [] });
     });
 }
 

@@ -1,0 +1,40 @@
+<!DOCTYPE html> 
+<html> 
+  
+<body> 
+    <center> 
+        <h1 style="color:green"> 
+          GeeksforGeeks 
+      </h1> 
+        <p>Click on the button to replace the array elements. 
+        </p> 
+        <button onclick="element_replace()"> 
+            Replace 
+        </button> 
+        <p>The Updated Array Elements:</p> 
+        <p id="result"></p> 
+        <script> 
+            function element_replace() { 
+  
+              // Initializing the array 
+              var list = ["January",  
+                          "March", 
+                          "April", 
+                          "June"]; 
+  
+              // splicing the array elements using splice() method 
+              list.splice(1, 0, "February"); 
+              // expected output [January, February, March, April, June] 
+  
+              // splicing the output elements after the first splicing 
+              list.splice(4, 1, "May"); 
+  
+              document.getElementById( 
+                "result").innerHTML = list; 
+            } 
+        </script> 
+  
+    </center> 
+</body> 
+  
+</html> 

@@ -16,8 +16,32 @@ document.addEventListener('DOMContentLoaded', function (dcle) {
 
     var Btn_Update = document.getElementById("btn_Update");
     Btn_Update.addEventListener('click', UpdataData);
+
+    var Btn_Update2 = document.getElementById("btn_find");
+    Btn_Update2.addEventListener('click', ReadError);
+    
+    sendMessage2ContentJS2();
 });
 
+chrome.tabs.onActivated.addListener(function(activeInfo) {
+    sendMessage2ContentJS2();
+});
+
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+    for(key in changes) {
+      if(key === 'error_count') {
+        GetErrorTimes();
+      }
+    }
+  });
+
+function ReadError(){
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        var activeTab = tabs[0];
+        chrome.tabs.sendMessage(activeTab.id, { "message": "message" });
+    });
+    
+}
 //按鈕點選儲存狀態
 function Setcheckbox() {
     var Cbox_checked = document.getElementById("checkbox").checked;
@@ -30,9 +54,6 @@ function Getcheckbox() {
     var Cbox_BB = document.getElementById("checkbox");
     chrome.storage.sync.get('Cbox_value', function (data) {
         Cbox_BB.checked = data.Cbox_value;
-        if (data.Cbox_value == true) {
-            sendMessage2ContentJS();
-        }
     });
 }
 
@@ -42,11 +63,15 @@ function sendMessage2ContentJS() {
         var activeTab = tabs[0];
         chrome.tabs.sendMessage(activeTab.id, { "message": "trans" });
     });
-    setTimeout(function () {
-        GetErrorTimes();
-    }, 1000);
-
 }
+//跟內容腳本溝通(通知他要做尋找錯誤)
+function sendMessage2ContentJS2() {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        var activeTab = tabs[0];
+        chrome.tabs.sendMessage(activeTab.id, { "message": "find" });
+    });
+}
+
 
 //設定錯誤次數
 function GetErrorTimes() {

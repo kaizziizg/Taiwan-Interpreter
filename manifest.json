@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
 
-  "name": "Taiwan Interpreter",
+  "name": "Taiwan term interpreter",
   "description": "This extension use to translate china term to taiwan term",
-  "version": "1.1",
+  "version": "1.2",
 
   "browser_action": {
     "default_icon": "images/icon.png",

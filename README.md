@@ -20,4 +20,8 @@
 ### Test html
 [![N|Solid](https://github.com/kaizziizg/Taiwan-Interpreter/raw/master/github/button_click-to-test.png)](https://kaizziizg.github.io/Taiwan-Interpreter/test_html/china_term.html)
 
+### Contact me
+If you want to contact me.
+Please send email to kaizzstudio@gmail.com
+I will reply soon.
 

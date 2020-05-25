@@ -1,14 +1,16 @@
-let taiwan_term=["test"];
-let china_term=["test"];
-var count=0;
+const url_taiwan_term = "https://raw.githubusercontent.com/kaizziizg/Taiwan-Interpreter/master/data/taiwan_term.txt";
+const url_china_term = "https://raw.githubusercontent.com/kaizziizg/Taiwan-Interpreter/master/data/china_term.txt";
+let taiwan_term = [];
+let china_term = [];
 
+var count=0;
 
 
 chrome.storage.sync.get('FirstUse', function (data) {
     if (data.FirstUse == true) {
         init();
     }else{
-        alert("請先點選插件進行更新資料")
+        UpdataData();
 		chrome.storage.sync.set({ error_count: 0 });
         chrome.storage.sync.set({ FirstUse: true });
     }
@@ -19,9 +21,14 @@ chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.message == "trans") {
             Transword();
+
+            
         }
     }
 );
+
+
+
 
 function Find_error() {
     
@@ -36,7 +43,7 @@ function Find_error() {
         }
     }
     chrome.storage.sync.set({ error_count: count });
-    console.log("總共有" + count + "錯誤");
+    // console.log("總共有" + count + "錯誤");
 }
 
 function Transword() {
@@ -48,9 +55,7 @@ function Transword() {
     });
     for (var i = 0; i < taiwan_term.length; i++) {
         document.body.innerHTML = document.body.innerHTML.replace(china_term[i], taiwan_term[i])
-    }
-    
-    
+    }  
 }
 function init(){
     chrome.storage.sync.get('taiwan_term_data', function (data) {
@@ -70,3 +75,23 @@ function init(){
     },500);
 }
 
+function UpdataData() {
+    GetData(url_taiwan_term, url_china_term)
+    .then(result => {
+        taiwan_term = result[0].split(',');
+        china_term = result[1].split(',');
+        chrome.storage.sync.set({ taiwan_term_data: taiwan_term });
+        chrome.storage.sync.set({ china_term_data: china_term });
+    });
+}
+
+
+async function GetData(url1, url2) {
+    const result1 = await fetch(url1)
+        .then(res => res.text())
+
+    const result2 = await fetch(url2)
+        .then(res => res.text())
+
+    return [result1, result2];
+}

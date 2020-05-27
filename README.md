@@ -14,7 +14,7 @@
 * [FlatUI] - HTML frame
 
 ### Installation
-[![N|Solid](https://raw.githubusercontent.com/kaizziizg/Taiwan-Interpreter/master/github/button_download-from-chrome-shop.png)](https://chrome.google.com/webstore/detail/chdmhkhpijfpkifpdjpdimjcabepfdpg/publish-accepted?authuser=3&hl=zh-TW)
+[![N|Solid](https://raw.githubusercontent.com/kaizziizg/Taiwan-Interpreter/master/github/button_download-from-chrome-shop.png)](https://chrome.google.com/webstore/detail/taiwan-term-interpreter/chdmhkhpijfpkifpdjpdimjcabepfdpg)
 
 
 ### Test html

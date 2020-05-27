@@ -3,7 +3,7 @@
 
   "name": "Taiwan term interpreter",
   "description": "This extension use to translate china term to taiwan term",
-  "version": "1.2",
+  "version": "1.4",
 
   "browser_action": {
     "default_icon": "images/icon.png",

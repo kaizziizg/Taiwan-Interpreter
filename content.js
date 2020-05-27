@@ -3,113 +3,129 @@ const url_china_term = "https://raw.githubusercontent.com/kaizziizg/Taiwan-Inter
 let taiwan_term = [];
 let china_term = [];
 
-var count=0;
+chrome.storage.sync.get('Used', function (data) {
+    if (data.Used) {
+        DataSetter();
 
-
-chrome.storage.sync.get('FirstUse', function (data) {
-    if (data.FirstUse == true) {
-        init();
-    }else{
-        UpdataData();
-		chrome.storage.sync.set({ error_count: 0 });
-        chrome.storage.sync.set({ FirstUse: true });
+    } else {
+        FirstInit();
     }
 });
 
-
-chrome.runtime.onMessage.addListener(
-    function (request, sender, sendResponse) {
-        if (request.message == "trans") {
-            Transword(); 
-        }else if(request.message == "find"){
-            Find_error(); 
-        }else if(request.message == "message"){
-            show_message();
-        }
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.message == 'ShowError') {
+        ShowError();
+    } else if (request.message == 'FindError') {
+        FindError();
+    } else if (request.message == 'TransWord') {
+        TransWord();
     }
-);
+    sendResponse({ status: "running" });
+    return true;
+});
 
 
-function show_message(){
-    chrome.storage.sync.get('error_message', function (data) {
-        alert(data.error_message);
-    });
+function ShowError() {
+    chrome.storage.sync.get("AlertErrorMessage", function (data) {
+        alert(data.AlertErrorMessage);
+    })
+
 }
 
 
-
-
-
-function Find_error() {
-    count=0;
-    message=""
-    chrome.storage.sync.get('china_term_data', function (data) {
-        china_term = data.china_term_data;
-    });
-
-    
-    for (var i = 0; i < china_term.length-1; i++) {
-        if (document.body.innerHTML.includes(china_term[i])) {
-            count += 1;
-            message = message+ china_term[i]+"->"+taiwan_term[i]+"\n";
+async function taiwan_term_data() {
+    return new Promise((resolve, reject) => {
+        try {
+            chrome.storage.sync.get("taiwan_term_data", function (data) {
+                china_term = data.china_term_data;
+                taiwan_term = data.taiwan_term_data;
+                resolve(true);
+            })
         }
-        
-    }
-
-    chrome.storage.sync.set({ error_count: count });
-
-    // console.log("總共有" + count + "錯誤");
-
-    chrome.storage.sync.set({ error_message: message });
-
+        catch (ex) {
+            reject(ex);
+        }
+    });
+}
+async function china_term_data() {
+    return new Promise((resolve, reject) => {
+        try {
+            chrome.storage.sync.get("china_term_data", function (data) {
+                china_term = data.china_term_data;
+                resolve(true);
+            })
+        }
+        catch (ex) {
+            reject(ex);
+        }
+    });
 }
 
-function Transword() {
-    // chrome.storage.sync.get('taiwan_term_data', function (data) {
-    //     taiwan_term = data.taiwan_term_data;
-    // });
-    // chrome.storage.sync.get('china_term_data', function (data) {
-    //     china_term = data.china_term_data;
-    // });
-    // console.log(china_term);
-    // console.log(taiwan_term);
-    for (var i = 0; i < taiwan_term.length; i++) {
-        if (document.body.innerHTML.includes(china_term[i])) {
-            document.body.innerHTML = document.body.innerHTML.replace(china_term[i], taiwan_term[i]);
-        }
-    }
-    
-
-}
-function init(){
-    chrome.storage.sync.get('taiwan_term_data', function (data) {
-        taiwan_term = data.taiwan_term_data;
-    });
-    chrome.storage.sync.get('china_term_data', function (data) {
-        china_term = data.china_term_data;
-    });
-
-    setTimeout(function(){
-        Find_error();
-        chrome.storage.sync.get('Cbox_value', function (data) {
-            if (data.Cbox_value == true) {
-                Transword();
+async function DataSetter() {
+    await taiwan_term_data();
+    await china_term_data();
+    await new Promise(resolve => {
+        chrome.storage.sync.get('AutoTrans', function (data) {
+            if (data.AutoTrans == true) {
+                // console.log("自動轉譯");
+                var origin_html = document.body.innerHTML;
+                for (var i = 0; i < taiwan_term.length; i++) {
+                    if (origin_html.includes(china_term[i])) {
+                        origin_html = origin_html.replace(china_term[i], taiwan_term[i]);
+                    }
+                }
+                document.body.innerHTML = origin_html;
             }
         });
-    },500);
-}
-
-function UpdataData() {
-    GetData(url_taiwan_term, url_china_term)
-    .then(result => {
-        taiwan_term = result[0].split(',');
-        china_term = result[1].split(',');
-        chrome.storage.sync.set({ taiwan_term_data: taiwan_term });
-        chrome.storage.sync.set({ china_term_data: china_term });
-        chrome.storage.sync.set({ error_index: [] });
+        resolve(true);
     });
 }
 
+
+
+async function FindError() {
+    await taiwan_term_data();
+    await china_term_data();
+    let message = "";
+    let count = 0;
+    await new Promise(resolve => {
+        for (var i = 0; i < china_term.length - 1; i++) {
+            if (document.body.innerHTML.includes(china_term[i])) {
+                count += 1;
+                message = message + china_term[i] + "->" + taiwan_term[i] + "\n";
+            }
+        }
+        resolve(true);
+    });
+    chrome.storage.sync.set({ BtnErrorMessage: "發現了" + count + "個非本地詞彙" });
+    chrome.storage.sync.set({ AlertErrorMessage: message });
+}
+
+async function SetData() {
+    const result1 = await fetch(url1)
+        .then(res => res.text())
+
+    const result2 = await fetch(url2)
+        .then(res => res.text())
+
+    return [result1, result2];
+}
+//======================FirstInit()==============================================
+function FirstInit() {
+    UpdateData();
+    chrome.storage.sync.set({ Used: true });
+    console.log("初次使用 已更新數據");
+}
+
+function UpdateData() {
+    GetData(url_taiwan_term, url_china_term)
+        .then(result => {
+            taiwan_term = result[0].split(',');
+            china_term = result[1].split(',');
+            chrome.storage.sync.set({ taiwan_term_data: taiwan_term });
+            chrome.storage.sync.set({ china_term_data: china_term });
+        });
+}
 
 async function GetData(url1, url2) {
     const result1 = await fetch(url1)
@@ -119,4 +135,14 @@ async function GetData(url1, url2) {
         .then(res => res.text())
 
     return [result1, result2];
+}
+//======================FirstInit()==============================================
+function TransWord() {
+    var origin_html = document.body.innerHTML;
+    for (var i = 0; i < taiwan_term.length; i++) {
+        if (origin_html.includes(china_term[i])) {
+            origin_html = origin_html.replace(china_term[i], taiwan_term[i]);
+        }
+    }
+    document.body.innerHTML = origin_html;
 }

@@ -28,3 +28,4 @@ with io.open("china_term.txt",'w', encoding='utf8') as file:
             continue 
         file.write(i)
         file.write(",")
+input()

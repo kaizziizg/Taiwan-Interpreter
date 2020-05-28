@@ -18,13 +18,13 @@ with open('googlesheet_n.csv', newline='', encoding='utf8') as csvfile:
 #建立txt
 with io.open("taiwan_term.txt",'w', encoding='utf8') as file:
     for i in taiwan_term:   
-        if(i=="行" or i=="列"):
+        if(i=="行" or i=="列" or i=="" or i==" "):
             continue 
         file.write(i)
         file.write(",")
 with io.open("china_term.txt",'w', encoding='utf8') as file:
     for i in china_term:  
-        if(i=="行" or i=="列"):
+        if(i=="行" or i=="列" or i=="" or i==" "):
             continue 
         file.write(i)
         file.write(",")

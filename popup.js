@@ -24,6 +24,10 @@ document.addEventListener('DOMContentLoaded', function (dcle) {
 function Setcheckbox() {
     var Cbox_checked = document.getElementById("checkbox").checked;
     chrome.storage.sync.set({ AutoTrans: Cbox_checked });
+	if(document.getElementById("checkbox").checked){
+		var btn_Update = document.getElementById("btn_Update");
+		btn_Update.innerHTML="注意!\n轉譯有可能導致網頁不正常加載";
+	}
 }
 
 

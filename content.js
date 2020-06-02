@@ -19,6 +19,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         FindError();
     } else if (request.message == 'TransWord') {
         TransWord();
+    } else if(request.message =="findAndShowError"){
+        findAndShowError();
     }
     sendResponse({ status: "running" });
     return true;
@@ -101,6 +103,23 @@ async function FindError() {
     chrome.storage.sync.set({ AlertErrorMessage: message });
 }
 
+async function findAndShowError(){
+    await taiwan_term_data();
+    await china_term_data();
+    let message = "";
+    let count = 0;
+    await new Promise(resolve => {
+        for (var i = 0; i < china_term.length - 1; i++) {
+            if (document.body.innerHTML.includes(china_term[i])) {
+                count += 1;
+                message = message + china_term[i] + "->" + taiwan_term[i] + "\n";
+            }
+        }
+        resolve(true);
+    });
+    alert(message);
+}
+
 async function SetData() {
     const result1 = await fetch(url1)
         .then(res => res.text())
@@ -137,12 +156,31 @@ async function GetData(url1, url2) {
     return [result1, result2];
 }
 //======================FirstInit()==============================================
+
+
+var textNodes = [];
+
+function findText(pnode) {
+  for (var i = 0; i < pnode.childNodes.length; ++i) {
+    var node = pnode.childNodes[i];
+    
+    if (node.nodeType == 3) { // text
+      textNodes.push(node);
+    } 
+    else {
+      findText(node);
+    }
+  }
+}
+
 function TransWord() {
-    var origin_html = document.body.innerHTML;
+	findText(document.body);
     for (var i = 0; i < taiwan_term.length; i++) {
-        if (origin_html.includes(china_term[i])) {
-            origin_html = origin_html.replace(china_term[i], taiwan_term[i]);
+        if (document.body.innerHTML.includes(china_term[i])) {
+            for (j = 0; j < textNodes.length; ++j) {
+  				textNodes[j].textContent = textNodes[j].textContent.replace(china_term[i], taiwan_term[i]);
+			}
         }
     }
-    document.body.innerHTML = origin_html;
 }
+
